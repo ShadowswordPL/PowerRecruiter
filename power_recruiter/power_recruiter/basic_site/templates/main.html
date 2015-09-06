@@ -1,0 +1,114 @@
+<!--
+Power Recruiter - a browser-based FSM-centered database application profiled for IT recruiters
+Copyright (C) 2015 Krzysztof Fudali, Andrzej Jackowski, Cezary Kosko, Filip Ochnik
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+{% extends "base_generic.html" %}
+{% load staticfiles %}
+
+{% block otherHeaders %}
+<link href="{% static 'dropzone/css/dropzone.css' %}" type="text/css" rel="stylesheet"/>
+<script src="{% static 'dropzone/dropzone.js' %}"></script>
+
+<script src="{{ static_js}}stateIcon.js"></script>
+<script src="{{ static_js}}tableFormatters.js"></script>
+<script src="{{ static_js}}tableSorters.js"></script>
+<script src="{{ static_js}}tableReload.js"></script>
+<script src="{{ static_js}}nameField.js"></script>
+<script src="{{ static_js}}conflictingPair.js"></script>
+<script src="{{ static_js}}conflictModalContent.js"></script>
+<script src="{{ static_js}}maintable.js"></script>
+<script src="{{ static_js}}addCandidate.js"></script>
+{% endblock %}
+
+{% block content %}
+
+{% if notifications > 0 %}
+    <div class="alert alert-danger">
+        <a href="#" class="close" data-dismiss="alert">&times;</a>
+        <strong>Error!</strong>
+        {% if notifications > 0 %}
+            There is one notification.
+        {% elif notifications > 1 %}
+            There are {{notifications}} notifications.
+        {% endif %}
+    </div>
+{% endif %}
+
+
+<div id="top-tooltip">
+    <div id="top-tooltip-left">
+        <div class="top-tooltip-inner-left">
+            <div class="btn-group">
+                <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">Filter states <span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                    {% for k, v in states.iteritems %}
+                    <li><input type="checkbox" class="stateCheckbox" name="state{{ k }}" id="state{{ k }}" checked /><label for="state{{ k }}">{{ v | safe }}</label></li>
+                    {% endfor %}
+                </ul>
+            </div>
+         </div>
+    </div>
+    <div id="top-tooltip-right">
+        <div class="top-tooltip-inner-right">
+            <a href="javascript:$('#creation-modal').modal('show');void(0);" type="button" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> Add new candidate</a>
+        </div>
+    </div>
+</div>
+
+<table id="maintable" data-toggle="table" data-url="{% url 'json' %}" data-cache="false" data-sort-name="id" data-sort-order="desc">
+    <thead>
+        <tr>
+            <th data-field="photo" data-formatter="photoFormatter" data-sortable="false" class="col-md-1" data-align="center"></th>
+            <th data-field="id" data-formatter="idFormatter" data-sortable="true" data-sorter="idSorter" class="col-md-1">ID</th>
+            <th data-field="candidate_name" data-formatter="nameFormatter" data-sortable="true" data-sorter="nameSorter" data-align="left">Name</th>
+            <th data-field="contact" data-formatter="contactFormatter" class="col-md-1" data-align="center">Contact</th>
+            <th data-field="state" data-formatter="stateFormatter" data-sortable="true" data-sorter="stateSorter" class="col-md-3" data-align="center">State</th>
+            <th data-field="attachments" data-formatter="attachmentsListFormatter" data-align="center">Attachments</th>
+            <th data-field="caveats" data-formatter="caveatsFormatter" data-cell-style="caveatsTdStyle">Caveats</th>
+        </tr>
+    </thead>
+</table>
+
+<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>
+            </div>
+
+            <div class="modal-body">
+                <p>You are about to delete <span id="deleteModalInfo"></span>.</p>
+                <p>Do you want to proceed?</p>
+                <p class="debug-url"></p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <a href="#" class="btn btn-danger danger" id="confirmDeleteButton">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include "create_person_modal.html" %}
+{% include "conflicts_modal.html" %}
+
+{% include "js/maintable.html" %}
+{% include "js/conflicts.html" %}
+
+{% endblock %}

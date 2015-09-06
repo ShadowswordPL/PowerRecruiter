@@ -1,0 +1,133 @@
+<!--
+Power Recruiter - a browser-based FSM-centered database application profiled for IT recruiters
+Copyright (C) 2015 Krzysztof Fudali, Andrzej Jackowski, Cezary Kosko, Filip Ochnik
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+{% load staticfiles %}
+<div id="conflicts_modal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <h4 class="modal-title">Conflict found: <strong id="conflict_modal_name">Name TODO</strong></h4>
+            </div>
+            <input type="hidden" id="id0" value="">
+            <input type="hidden" id="id1" value="">
+            <input type="hidden" id="checked-img" value="0">
+            <input type="hidden" id="checked-status" value="0">
+            <input type="hidden" id="checked-linkedin" value="0">
+            <input type="hidden" id="checked-goldenline" value="0">
+            <input type="hidden" id="checked-email" value="0">
+
+            <div class="modal-body">
+            <form>
+            <div class="container-fluid">
+                <div class="row heading">
+                    <div class="col-md-12">
+                        <h4>Choose the photo</h4>
+                    </div>
+                </div>
+                <div class="row conflict-imgs">
+                    <div class="col-md-4 col-md-offset-2">
+                        <div class="imageDiv">
+                            <a href="javascript:checkImage(0);"><img id="img0" class="checked" src="https://static.licdn.com/scds/common/u/images/themes/katy/ghosts/person/ghost_person_200x200_v1.png"></a>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="imageDiv">
+                            <a href="javascript:checkImage(1);"><img id="img1" src="https://static.licdn.com/scds/common/u/images/themes/katy/ghosts/person/ghost_person_200x200_v1.png"></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row heading">
+                    <div class="col-md-12">
+                        <h4>Choose the state</h4>
+                    </div>
+                </div>
+                <div class="row conflict conflict-status">
+                    <div class="col-md-10 col-md-offset-1">
+                        <ul class="nav nav-pills">
+                        <li id="status0" role="presentation" class="active"><a href="javascript:checkNav('#checked-status', '#status', 0);"></a></li>
+                        <li id="status1" role="presentation"><a href="javascript:checkNav('#checked-status', '#status', 1);"></a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- LINKEDIN SECTION -->
+                <div id="linkedin-div">
+                    <div class="row heading">
+                        <div class="col-md-12 url-link">
+                            <img src="static/img/linkedin.png" />
+                        </div>
+                    </div>
+                    <div class="row conflict conflict-urls">
+                        <div class="col-md-12">
+                            <ul class="nav nav-pills">
+                            <li id="linkedin0" role="presentation" class="active"><a href="javascript:checkNav('#checked-linkedin', '#linkedin', 0);"></a></li>
+                            <li id="linkedin1" role="presentation"><a href="javascript:checkNav('#checked-linkedin', '#linkedin', 1);"></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- END OF LINKEDIN -->
+
+
+                <!-- GOLDENLINE SECTION -->
+                <div id="goldenline-div">
+                    <div class="row heading">
+                        <div class="col-md-12 url-link">
+                            <img src="static/img/goldenline.png" />
+                        </div>
+                    </div>
+                    <div class="row conflict conflict-urls">
+                        <div class="col-md-12">
+                            <ul class="nav nav-pills">
+                            <li id="goldenline0" role="presentation" class="active"><a href="javascript:checkNav('#checked-goldenline', '#goldenline', 0);"></a></li>
+                            <li id="goldenline1" role="presentation"><a href="javascript:checkNav('#checked-goldenline', '#goldenline', 1);"></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- END OF GOLDENLINE -->
+
+                <!-- EMAIL SECTION -->
+                <div id="email-div">
+                    <div class="row heading">
+                        <div class="col-md-12 url-link">
+                            <img src="static/img/email.jpeg" />
+                        </div>
+                    </div>
+                    <div class="row conflict conflict-urls">
+                        <div class="col-md-12">
+                            <ul class="nav nav-pills">
+                            <li id="email0" role="presentation" class="active"><a href="javascript:checkNav('#checked-email', '#email', 0);"></a></li>
+                            <li id="email1" role="presentation"><a href="javascript:checkNav('#checked-email', '#email', 1);"></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- END OF EMAIL -->
+
+            </div> <!-- container -->
+            </form>
+            </div> <!-- modal-body -->
+            <div class="modal-footer">
+                <button id="conflicts_modal_dont_merge" type="button" class="btn btn-warning">Don't merge</button>
+                <button id="conflicts_modal_merge" type="button" class="btn btn-primary">Merge</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

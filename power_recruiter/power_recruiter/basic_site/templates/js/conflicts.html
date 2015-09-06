@@ -1,0 +1,142 @@
+<!--
+Power Recruiter - a browser-based FSM-centered database application profiled for IT recruiters
+Copyright (C) 2015 Krzysztof Fudali, Andrzej Jackowski, Cezary Kosko, Filip Ochnik
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<script>
+    $('#conflicts_modal').on('hidden.bs.modal', function (e) {
+        get_conflicts();
+    });
+
+    function get_conflicts() {
+        $.get(
+            '/candidate/get_conflicts/',
+            function (data) {
+                if (data[0].length > 0) {
+                    var modal_data = new ConflictModalContent(data);
+                    show_conflicts_modal(modal_data);
+                }
+            }
+        );
+    }
+
+    function show_conflicts_modal(modal_content) {
+        set_values_on_modal(modal_content);
+        $('#conflicts_modal').modal('show');
+        show_or_hide_section(modal_content.linkedin, '#linkedin0', '#linkedin1', '#linkedin-div');
+        show_or_hide_section(modal_content.goldenline, '#goldenline0', '#goldenline1', '#goldenline-div');
+        show_or_hide_section(modal_content.email, '#email0', '#email1', '#email-div');
+    }
+
+    function set_values_on_modal(modal_content) {
+        set_name(modal_content.name);
+        set_ids(modal_content.ids);
+        set_images(modal_content.images);
+        set_states(modal_content.states);
+    }
+
+    function set_name(name) {
+        $('#conflict_modal_name').text(name);
+    }
+
+    function set_ids(ids) {
+        $('#id0').val(ids.first);
+        $('#id1').val(ids.second);
+    }
+
+    function set_images(images) {
+        $('#img0').attr('src', images.first);
+        $('#img1').attr('src', images.second);
+    }
+
+    function set_states(states) {
+        $('#status0 a').text(states.first);
+        $('#status1 a').text(states.second);
+    }
+
+    function show_or_hide_section(pair, fst_div, snd_div, section_div) {
+        if (!pair.first && !pair.second) {
+            $(section_div).hide();
+        } else {
+            show_or_hide_button(shortenName(pair.first, 32), fst_div);
+            show_or_hide_button(shortenName(pair.second, 32), snd_div);
+        }
+    }
+
+    function show_or_hide_button(val, div) {
+        if (val) {
+            $(div + ' a').text(val);
+        } else {
+            $(div + ' a').text('blank');
+        }
+    }
+
+    function checkImage(k) {
+        $('#checked-img').val(k);
+        $('#img'+k).addClass("checked");
+        $('#img'+(1-k)).removeClass("checked");
+    }
+
+    function checkNav(hidden_id, div_id, k) {
+        $(hidden_id).val(k);
+        $(div_id+k).addClass("active");
+        $(div_id+(1-k)).removeClass("active");
+    }
+
+    function merge(person_ids) {
+        resolve_conflicts(person_ids, true);
+    }
+
+    function dont_merge(person_ids) {
+        resolve_conflicts(person_ids, false);
+    }
+
+    function resolve_conflicts(merge) {
+        var ids = get_ids_from_modal();
+        var img = $('#checked-img').val();
+        var state = $('#checked-status').val();
+        var linkedin = $('#checked-linkedin').val();
+        var goldenline = $('#checked-goldenline').val();
+        var email = $('#checked-email').val();
+        $.post(
+                '/candidate/resolve_conflicts/',
+                {
+                    'ids': JSON.stringify(ids),
+                    'img': img,
+                    'state': state,
+                    'linkedin': linkedin,
+                    'goldenline': goldenline,
+                    'email': email,
+                    'merge': merge
+                },
+                function() { $('#conflicts_modal').modal('hide'); reloadData(); }
+        );
+    }
+
+    function get_ids_from_modal() {
+        return [$('#id0').val(), $('#id1').val()];
+    }
+
+    $('#conflicts_modal_merge').on('click', function (e) {
+        resolve_conflicts(true);
+    });
+
+    $('#conflicts_modal_dont_merge').on('click', function (e) {
+        resolve_conflicts(false);
+    });
+
+    get_conflicts();
+</script>
